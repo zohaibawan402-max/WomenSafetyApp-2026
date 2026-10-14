@@ -3,25 +3,31 @@ name: Build Android APK
 on:
   push:
     branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - name: set up JDK 11
-      uses: actions/setup-java@v3
+    - name: set up JDK 17
+      uses: actions/setup-java@v4
       with:
-        java-version: '11'
+        java-version: '17'
         distribution: 'temurin'
 
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
     - name: Build APK
-      run: |
-        mkdir -p app/src/main/java/com/example/womensafety
-        mkdir -p app/src/main/res/layout
-        mv MainActivity.java app/src/main/java/com/example/womensafety/
-        mv activity_main.xml app/src/main/res/layout/
-        mv AndroidManifest.xml app/src/main/
+      run: ./gradlew assembleDebug
+
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-debug
+        path: app/build/outputs/apk/debug/app-debug.apk
         
