@@ -1,0 +1,27 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+
+    - name: Build APK
+      run: |
+        mkdir -p app/src/main/java/com/example/womensafety
+        mkdir -p app/src/main/res/layout
+        mv MainActivity.java app/src/main/java/com/example/womensafety/
+        mv activity_main.xml app/src/main/res/layout/
+        mv AndroidManifest.xml app/src/main/
+        
